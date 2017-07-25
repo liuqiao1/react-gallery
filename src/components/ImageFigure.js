@@ -14,10 +14,10 @@ import React from 'react'
 //import styles from './ImageFigure.less'
 
 const ImageFigure = ({...props}) => {
-  const {imageURL, title} = props;
+  const {imageURL, title, fileName} = props;
 
   return (
-    <figure className = 'img-figure'>
+    <figure className = 'img-figure' ref={props.imgRef}>
         <img src={imageURL} alt={title}/>
         <figcaption>
             <h2>{title}</h2>

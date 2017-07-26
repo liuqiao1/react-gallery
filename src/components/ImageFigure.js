@@ -14,10 +14,13 @@ import React from 'react'
 //import styles from './ImageFigure.less'
 
 const ImageFigure = ({...props}) => {
-  const {imageURL, title, fileName} = props;
-
+  const {imageURL, title, arrange} = props;
+  let styleObj = {};
+  if(arrange.pos){
+      styleObj  = arrange.pos;
+  }
   return (
-    <figure className = 'img-figure' ref={props.imgRef}>
+    <figure className = 'img-figure' ref={props.imgRef} style = {styleObj}>
         <img src={imageURL} alt={title}/>
         <figcaption>
             <h2>{title}</h2>

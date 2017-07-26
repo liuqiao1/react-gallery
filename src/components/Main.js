@@ -10,6 +10,8 @@ const imageDatas = require('../data/imgDatas.json');
 
 //let yeomanImage = require('../images/yeoman.png');
 //let imageDataArr = [];
+let imageNodes = [];
+//let pilo;
 
 
 (function getImageURL(imageDatas){
@@ -38,75 +40,231 @@ const imageDatas = require('../data/imgDatas.json');
 
 
 class AppComponent extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      imgsArrangeArr:[
+        // {
+        //   pos:{
+        //     left:'0',
+        //     top:'0'
+        //   }
+        // }
+      ]
+    }
+    this.Constant = {
+      centerPos:{
+        left: 0,
+        right: 0
+      },
+      hPosRange:{
+        leftSecX:[0,0],
+        rightSecX:[0,0],
+        y:[0,0]
+      },
+      vPosRange:{
+        x:[0,0],
+        topY:[0,0]
+      }
+    }
+  }
   
   //组件家在以后 为每张图片计算其位置的范围
   componentDidMount(){
     //console.log('componentDidMount...');
     //获取舞台大小
+    let self = this;
     let stageDOM = this.stage, //React.findDOMNode(this.refs.stage),
         stageW = stageDOM.scrollWidth,
         stageH = stageDOM.scrollHeight,
         halfStageW = Math.ceil(stageW / 2),
         halfStageH = Math.ceil(stageH /2 );
     //console.log(stageDOM);
+    //console.log(this.state.imgsArrangeArr);
 
     //获取imageFigure大小
-    //let imgDOM = ReactDOM.findDOMNode(this.ref.img1);
+    let imgDOM = imageNodes[0];//pilo;//this.imgNode;//ReactDOM.findDOMNode(this.ref.img1);
     //console.log(imgDOM);
+    let imgW = imgDOM.scrollWidth,
+        imgH = imgDOM.scrollHeight,
+        halfImgW = Math.ceil(imgW / 2),
+        halfImgH = Math.ceil(imgH / 2);
+
+    this.Constant.centerPos ={
+      left:halfStageW - halfImgW,
+      top:halfStageH-halfImgH
+    }
+
+    this.Constant.hPosRange.leftSecX[0] = -halfImgW;
+    this.Constant.hPosRange.leftSecX[1] = halfStageW - halfImgW * 3;
+    this.Constant.hPosRange.rightSecX[0] = halfStageW + halfImgW;
+    this.Constant.hPosRange.rightSecX[1] = stageW - halfImgW;
+    this.Constant.hPosRange.y[0] = -halfImgH;
+    this.Constant.hPosRange.y[1] = stageH-halfImgH;
+
+    this.Constant.vPosRange.topY[0] = -halfImgH;
+    this.Constant.vPosRange.topY[1] = halfStageH - halfImgH * 3;
+    this.Constant.vPosRange.x[0] = halfStageW - imgW;
+    this.Constant.vPosRange.x[1] = halfStageW;
+
+    rearrange(8);
+
+    /**
+     * 重新排布
+     */
+    function rearrange(centerImgIndex){
+      //console.log('rearrange...');
+      //console.log(self.state.imgsArrangeArr);
+      let imgsArrangeArr = self.state.imgsArrangeArr,
+          Constant = self.Constant,
+          centerPos = Constant.centerPos,
+          hPosRange = Constant.hPosRange,
+          vPosRange = Constant.vPosRange,
+          hPosRangeLeftSecX = hPosRange.leftSecX,
+          hPosRangeRightSecX = hPosRange.rightSecX,
+          hPosRangeY = hPosRange.y,
+          vPosRangeTopY = vPosRange.topY,
+          //vPosRangeTopX = vPosRange.topX,
+          vPosRangeX = vPosRange.x,
+
+          //布局在舞台上侧的图片信息   Math.random()返回0.0 ~ 1.0 之间的一个伪随机数
+          imgsArrangeTopArr = [],
+          topImgNum = Math.ceil (Math.random() * 2),//取值区间0或1
+          topImgSpliceIndex = 0,//标记 从哪个位置来取
+          
+          //布局在舞台中间的图片信息
+          imgsArrangeCenterArr = imgsArrangeArr.splice(centerImgIndex,1);
+
+          //居中centerIndex的图片
+          imgsArrangeCenterArr[0].pos = centerPos;
+
+          //取出要布局上侧图片的状态信息
+          topImgSpliceIndex = Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));//从索引位置往后取出
+          imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex,topImgNum);
+
+          // 布局位于上侧的图片
+          imgsArrangeTopArr.forEach(function (value,index){
+            imgsArrangeTopArr[index].pos = {
+              top: getRangeRandom(vPosRangeTopY[0] , vPosRangeTopY[1]),
+              left: getRangeRandom(vPosRangeX[0], vPosRangeX[1])
+            }
+          });
+
+          //布局左右两侧的图片
+          for(let i=0, j=imgsArrangeArr.length, k = j / 2 ; i < j; i++){
+             let hPosRangeLORX = null;
+
+             if( i < k ){
+               hPosRangeLORX = hPosRangeLeftSecX;
+             }else{
+               hPosRangeLORX = hPosRangeRightSecX;
+             }
+
+             imgsArrangeArr[i].pos = {
+               top: getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
+               left: getRangeRandom(hPosRangeLORX[0],hPosRangeLORX[1])
+             }
+          }
+
+          if(imgsArrangeTopArr && imgsArrangeTopArr[0]){
+            imgsArrangeArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
+          }
+
+          imgsArrangeArr.splice(centerImgIndex, 0, imgsArrangeCenterArr[0]);
+
+          console.log(imgsArrangeArr);
+
+          self.setState({
+            imgsArrangeArr: imgsArrangeArr
+          })
+
+
+    }
+
+    function getRangeRandom(low,high){
+      return Math.ceil(Math.random() * (high-low) + low);
+    }
   }
+
+  
  
   render() {
     let imageFigures = [];
     
+    // Constant:{
+    //     centerPos:{
+    //       left: 0,
+    //       right: 0
+    //     },
+    //     hPosRange:{
+    //       leftSecX:[0,0],
+    //       rightSecX:[0,0],
+    //       y:[0,0] 
+    //     },
+    //     vPosRange:{
+    //       x:[0,0],
+    //       topY:[0,0]
+    //     }
+    // }
+    // const pos = {
+        
+    // }
 
-    const pos = {
-        centerPos:{
-          left: 0,
-          right: 0
-        },
-        hPosRange:{
-          leftSecX:[0,0],
-          rightSecX:[0,0],
-          y:[0,0]
-        },
-        vPosRange:{
-          x:[0,0],
-          topY:[0,0]
-        }
-    }
-    let imgNodes = [];
+    // const imgProps = {
+    //   imageURL:'../image/1.jpg',
+    //   title:'text',
+    //   fileName:'1.jpg'
+    // }
+    //let imgNodes = [];
     imageDatas.forEach(function(value,index){
+        //console.log(this.state.imgsArrangeArr);
+        let imgsArrangeArr = this.state.imgsArrangeArr;
+
+        if(! imgsArrangeArr[index]){
+          this.state.imgsArrangeArr[index] = {
+            pos:{
+              left: 0,
+              top: 0
+            }
+          }
+        }
         const imageProps={
           imageURL: value.imageURL,
           title: value.title,
-          fileName: value.fileName
+          //fileName: value.fileName
+          arrange: imgsArrangeArr[index]
         }
         //let refName = 'img'+index;
-        imageFigures.push(<ImageFigure {...imageProps} />);
-          
-     });
-     console.log(imgNodes[0]);
+        //imageFigures.push(<ImageFigure {...imageProps} />);
+        imageFigures.push(imageProps);   
+     }.bind(this));
+     //console.log(imageFigures);
     
     return (
       /*<div className="index">
         <img src={yeomanImage} alt="Yeoman Generator" />Hello
         <div className="notice">Please edit <code>src/components/Main.js</code> to get started!</div>
       </div>*/
+      /**
+       * React 支持给任意组件添加特殊属性。ref 属性接受一个回调函数，它在组件被加载或卸载时会立即执行。
+
+         当给 HTML 元素添加 ref 属性时，ref 回调接收了底层的 DOM 元素作为参数。例如，下面的代码使用 ref 回调来存储 DOM 节点的引用。
+       */
       <section className="stage" ref = {(section) => { this.stage = section; }}>  
         <section className="img-sec">
-          {imageFigures}
-          
-          {/*{
-            imageDatas.map((item,key) =>{
-              let props = {
-                imageURL: item.imageURL,
-                title: item.title,
-                fileName: item.fileName
-              },
-              <ImageFigure {...props} imgRef = {el => this.imgElement = el}/>
-            })
-          }*/}
+          {/*{imageFigures}*/}
+          {imageFigures.map((item,key) => 
+              /**
+              你不能在函数式组件上使用 ref 属性，因为它们没有实例
+              对父组件暴露 DOM 节点:建议在子节点上暴露一个特殊的属性。
+              子节点将会获得一个函数属性，并将其作为 ref 属性附加到 DOM 节点。
+              这允许父代通过中间件将 ref 回调给子代的 DOM 节点
 
+              <ImageFigure>用 {} 包着就无法渲染？为什么？
+               */
+              <ImageFigure {...item} imgRef = { (node) => (imageNodes[key] = node)} />
+          )}
+          
         </section>
 
         <section className="ctrl-nav">

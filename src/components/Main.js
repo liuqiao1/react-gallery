@@ -42,13 +42,16 @@ let imageNodes = [];
 class AppComponent extends React.Component {
   constructor(props){
     super(props);
+    let self = this;
+
     this.state = {
       imgsArrangeArr:[
         // {
         //   pos:{
         //     left:'0',
         //     top:'0'
-        //   }
+        //   },
+        //   isInverse: false
         // }
       ]
     }
@@ -67,9 +70,20 @@ class AppComponent extends React.Component {
         topY:[0,0]
       }
     }
+
+    this.inverse = (index) => {
+      return (() => {
+        let imgsArrangeArr = self.state.imgsArrangeArr;
+        imgsArrangeArr[index].isInverse = !imgsArrangeArr[index].isInverse;
+
+        this.setState({
+          imgsArrangeArr: imgsArrangeArr
+        })
+      })
+    }
   }
   
-  //组件家在以后 为每张图片计算其位置的范围
+  //组件加载以后 为每张图片计算其位置的范围
   componentDidMount(){
     //console.log('componentDidMount...');
     //获取舞台大小
@@ -136,7 +150,17 @@ class AppComponent extends React.Component {
           imgsArrangeCenterArr = imgsArrangeArr.splice(centerImgIndex,1);
 
           //居中centerIndex的图片
-          imgsArrangeCenterArr[0].pos = centerPos;
+          imgsArrangeCenterArr = [
+            {
+              pos: centerPos,
+              rotate: 0,
+              isCenter: true
+            }
+          ]
+          //imgsArrangeCenterArr[0].pos = centerPos;
+          //imgsArrangeCenterArr[0].rotate = 0;
+          //imgsArrangeCenterArr[0].isCenter =  true;
+
 
           //取出要布局上侧图片的状态信息
           topImgSpliceIndex = Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));//从索引位置往后取出
@@ -144,10 +168,16 @@ class AppComponent extends React.Component {
 
           // 布局位于上侧的图片
           imgsArrangeTopArr.forEach(function (value,index){
-            imgsArrangeTopArr[index].pos = {
-              top: getRangeRandom(vPosRangeTopY[0] , vPosRangeTopY[1]),
-              left: getRangeRandom(vPosRangeX[0], vPosRangeX[1])
+            //这种方法覆盖了初始化内容
+            imgsArrangeTopArr[index] = {
+              pos:{
+                top: getRangeRandom(vPosRangeTopY[0] , vPosRangeTopY[1]),
+                left: getRangeRandom(vPosRangeX[0], vPosRangeX[1])
+              },
+              rotate:get30DegRandom(),
+              isCenter: true
             }
+           
           });
 
           //布局左右两侧的图片
@@ -160,9 +190,13 @@ class AppComponent extends React.Component {
                hPosRangeLORX = hPosRangeRightSecX;
              }
 
-             imgsArrangeArr[i].pos = {
-               top: getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
-               left: getRangeRandom(hPosRangeLORX[0],hPosRangeLORX[1])
+             imgsArrangeArr[i] = {
+               pos : {
+                  top: getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
+                  left: getRangeRandom(hPosRangeLORX[0],hPosRangeLORX[1])
+               },
+               rotate:get30DegRandom(),
+               isCenter:false
              }
           }
 
@@ -184,55 +218,45 @@ class AppComponent extends React.Component {
     function getRangeRandom(low,high){
       return Math.ceil(Math.random() * (high-low) + low);
     }
+
+    function get30DegRandom(){
+      return (Math.random() > 0.5? '':'-') + Math.ceil(Math.random() * 30);
+    }
   }
 
   
  
   render() {
     let imageFigures = [];
-    
-    // Constant:{
-    //     centerPos:{
-    //       left: 0,
-    //       right: 0
-    //     },
-    //     hPosRange:{
-    //       leftSecX:[0,0],
-    //       rightSecX:[0,0],
-    //       y:[0,0] 
-    //     },
-    //     vPosRange:{
-    //       x:[0,0],
-    //       topY:[0,0]
-    //     }
-    // }
-    // const pos = {
-        
-    // }
-
     // const imgProps = {
     //   imageURL:'../image/1.jpg',
     //   title:'text',
     //   fileName:'1.jpg'
     // }
-    //let imgNodes = [];
+  
+    //let imgsArrangeArr = this.state.imgsArrangeArr;
     imageDatas.forEach(function(value,index){
         //console.log(this.state.imgsArrangeArr);
-        let imgsArrangeArr = this.state.imgsArrangeArr;
-
-        if(! imgsArrangeArr[index]){
+        if(! this.state.imgsArrangeArr[index]){
+          
           this.state.imgsArrangeArr[index] = {
             pos:{
               left: 0,
               top: 0
-            }
+            },
+            rotate: 0,
+            isInverse: false,
+            isCenter: false
+            //reverse: this.inverse(index),
           }
+
+          console.log('init imgFigure'+index+'...'+this.state.imgsArrangeArr[index]);
         }
         const imageProps={
           imageURL: value.imageURL,
           title: value.title,
           //fileName: value.fileName
-          arrange: imgsArrangeArr[index]
+          arrange: this.state.imgsArrangeArr[index]
         }
         //let refName = 'img'+index;
         //imageFigures.push(<ImageFigure {...imageProps} />);
@@ -262,7 +286,7 @@ class AppComponent extends React.Component {
 
               <ImageFigure>用 {} 包着就无法渲染？为什么？
                */
-              <ImageFigure {...item} imgRef = { (node) => (imageNodes[key] = node)} />
+              <ImageFigure {...item} reverse = {this.inverse(key)} imgRef = { (node) => (imageNodes[key] = node)} />
           )}
           
         </section>

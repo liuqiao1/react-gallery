@@ -17,7 +17,7 @@ let imageNodes = [];
 (function getImageURL(imageDatas){
     imageDatas.map((item)=>{
         //imageDataArr[key] = 
-        item.imageURL = require('../image/'+item.fileName);
+        item.imageURL = require('../images/'+item.fileName);
     });
 
     //return imageDataArr;

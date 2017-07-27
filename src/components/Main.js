@@ -81,55 +81,10 @@ class AppComponent extends React.Component {
         })
       })
     }
-  }
-  
-  //组件加载以后 为每张图片计算其位置的范围
-  componentDidMount(){
-    //console.log('componentDidMount...');
-    //获取舞台大小
-    let self = this;
-    let stageDOM = this.stage, //React.findDOMNode(this.refs.stage),
-        stageW = stageDOM.scrollWidth,
-        stageH = stageDOM.scrollHeight,
-        halfStageW = Math.ceil(stageW / 2),
-        halfStageH = Math.ceil(stageH /2 );
-    //console.log(stageDOM);
-    //console.log(this.state.imgsArrangeArr);
 
-    //获取imageFigure大小
-    let imgDOM = imageNodes[0];//pilo;//this.imgNode;//ReactDOM.findDOMNode(this.ref.img1);
-    //console.log(imgDOM);
-    let imgW = imgDOM.scrollWidth,
-        imgH = imgDOM.scrollHeight,
-        halfImgW = Math.ceil(imgW / 2),
-        halfImgH = Math.ceil(imgH / 2);
-
-    this.Constant.centerPos ={
-      left:halfStageW - halfImgW,
-      top:halfStageH-halfImgH
-    }
-
-    this.Constant.hPosRange.leftSecX[0] = -halfImgW;
-    this.Constant.hPosRange.leftSecX[1] = halfStageW - halfImgW * 3;
-    this.Constant.hPosRange.rightSecX[0] = halfStageW + halfImgW;
-    this.Constant.hPosRange.rightSecX[1] = stageW - halfImgW;
-    this.Constant.hPosRange.y[0] = -halfImgH;
-    this.Constant.hPosRange.y[1] = stageH-halfImgH;
-
-    this.Constant.vPosRange.topY[0] = -halfImgH;
-    this.Constant.vPosRange.topY[1] = halfStageH - halfImgH * 3;
-    this.Constant.vPosRange.x[0] = halfStageW - imgW;
-    this.Constant.vPosRange.x[1] = halfStageW;
-
-    rearrange(8);
-
-    /**
-     * 重新排布
-     */
-    function rearrange(centerImgIndex){
-      //console.log('rearrange...');
-      //console.log(self.state.imgsArrangeArr);
-      let imgsArrangeArr = self.state.imgsArrangeArr,
+    this.rearrange = (centerImgIndex) => {
+      return (() => {
+        let imgsArrangeArr = this.state.imgsArrangeArr,
           Constant = self.Constant,
           centerPos = Constant.centerPos,
           hPosRange = Constant.hPosRange,
@@ -208,20 +163,68 @@ class AppComponent extends React.Component {
 
           console.log(imgsArrangeArr);
 
-          self.setState({
+          this.setState({
             imgsArrangeArr: imgsArrangeArr
           })
 
+          function getRangeRandom(low,high){
+            return Math.ceil(Math.random() * (high-low) + low);
+          }
 
+          function get30DegRandom(){
+            return (Math.random() > 0.5? '':'-') + Math.ceil(Math.random() * 30);
+          }
+      })
+
+      
+      
+       
+    }
+  }
+
+  test(){
+      console.log(test);
+  }
+  //组件加载以后 为每张图片计算其位置的范围
+  componentDidMount(){
+    //console.log('componentDidMount...');
+    //获取舞台大小
+    let self = this;
+    let stageDOM = this.stage, //React.findDOMNode(this.refs.stage),
+        stageW = stageDOM.scrollWidth,
+        stageH = stageDOM.scrollHeight,
+        halfStageW = Math.ceil(stageW / 2),
+        halfStageH = Math.ceil(stageH /2 );
+    //console.log(stageDOM);
+    //console.log(this.state.imgsArrangeArr);
+
+    //获取imageFigure大小
+    let imgDOM = imageNodes[0];//pilo;//this.imgNode;//ReactDOM.findDOMNode(this.ref.img1);
+    //console.log(imgDOM);
+    let imgW = imgDOM.scrollWidth,
+        imgH = imgDOM.scrollHeight,
+        halfImgW = Math.ceil(imgW / 2),
+        halfImgH = Math.ceil(imgH / 2);
+
+    this.Constant.centerPos ={
+      left:halfStageW - halfImgW,
+      top:halfStageH-halfImgH
     }
 
-    function getRangeRandom(low,high){
-      return Math.ceil(Math.random() * (high-low) + low);
-    }
+    this.Constant.hPosRange.leftSecX[0] = -halfImgW;
+    this.Constant.hPosRange.leftSecX[1] = halfStageW - halfImgW * 3;
+    this.Constant.hPosRange.rightSecX[0] = halfStageW + halfImgW;
+    this.Constant.hPosRange.rightSecX[1] = stageW - halfImgW;
+    this.Constant.hPosRange.y[0] = -halfImgH;
+    this.Constant.hPosRange.y[1] = stageH-halfImgH;
 
-    function get30DegRandom(){
-      return (Math.random() > 0.5? '':'-') + Math.ceil(Math.random() * 30);
-    }
+    this.Constant.vPosRange.topY[0] = -halfImgH;
+    this.Constant.vPosRange.topY[1] = halfStageH - halfImgH * 3;
+    this.Constant.vPosRange.x[0] = halfStageW - imgW;
+    this.Constant.vPosRange.x[1] = halfStageW;
+
+    this.rearrange(8)();
+
   }
 
   
@@ -286,7 +289,7 @@ class AppComponent extends React.Component {
 
               <ImageFigure>用 {} 包着就无法渲染？为什么？
                */
-              <ImageFigure {...item} reverse = {this.inverse(key)} imgRef = { (node) => (imageNodes[key] = node)} />
+              <ImageFigure {...item} rearrange = {this.rearrange(key)}  reverse = {this.inverse(key)} imgRef = { (node) => (imageNodes[key] = node)} />
           )}
           
         </section>

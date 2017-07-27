@@ -14,7 +14,7 @@ import React from 'react'
 //import styles from './ImageFigure.less'
 
 const ImageFigure = ({...props}) => {
-  const {imageURL, title, arrange, reverse} = props;
+  const {imageURL, title, arrange, reverse, rearrange} = props;
   let styleObj = {};
 
   let imgFigureClassName = 'img-figure';//arrange.isInverse? 'img-back' : 'img-figure';
@@ -30,8 +30,14 @@ const ImageFigure = ({...props}) => {
   }
 
   function handleClick(e){
-      console.log(arrange.isInverse? 'inverse':'not inverse');
-      reverse();
+      //console.log(arrange.isInverse? 'inverse':'not inverse');
+      
+      if(arrange.isCenter){
+          //点击中间的图片
+          reverse();
+      }else{
+          rearrange();
+      }
   }
   return (
     <figure className = {imgFigureClassName} ref={props.imgRef} style = {styleObj} onClick = {handleClick}>

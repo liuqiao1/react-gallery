@@ -10,6 +10,10 @@
     background-color: #fff;
     box-sizing: border-box;
 
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform .6s ease-in-out, left .6s ease-in-out,top .6s ease-in-out;
+
     img{
         width: 100%;
         height: 90%;
@@ -24,12 +28,14 @@
             font-size: 16px;
         }
     }
+
+    &.img-back{
+        //background-color: red;
+        transform: rotateY(180deg);
+        -webkit-transform: rotateY(180deg); /* Safari 与 Chrome */
+    }
+
     
 }
 
-.img-back{
-   //background-color: red;
-   transform: rotateY(180deg);
-   -webkit-transform: rotateY(180deg); /* Safari 与 Chrome */
-}
 

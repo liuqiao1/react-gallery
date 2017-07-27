@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import ImageFigure from './ImageFigure'
+import ControllerUnit from './ControllerUnit'
 
 const imageDatas = require('../data/imgDatas.json');
 
@@ -116,9 +117,9 @@ class AppComponent extends React.Component {
           //imgsArrangeCenterArr[0].rotate = 0;
           //imgsArrangeCenterArr[0].isCenter =  true;
 
-
+          debugger;
           //取出要布局上侧图片的状态信息
-          topImgSpliceIndex = Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));//从索引位置往后取出
+          topImgSpliceIndex = Math.floor(Math.random() * (imgsArrangeArr.length - topImgNum));//从索引位置往后取出
           imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex,topImgNum);
 
           // 布局位于上侧的图片
@@ -130,7 +131,7 @@ class AppComponent extends React.Component {
                 left: getRangeRandom(vPosRangeX[0], vPosRangeX[1])
               },
               rotate:get30DegRandom(),
-              isCenter: true
+              isCenter: false
             }
            
           });
@@ -174,17 +175,23 @@ class AppComponent extends React.Component {
           function get30DegRandom(){
             return (Math.random() > 0.5? '':'-') + Math.ceil(Math.random() * 30);
           }
-      })
-
-      
-      
-       
+      })  
     }
+
+    //this.control = (index) => {
+      //return () => {
+        //把制定图片居中
+        //this.rearrange(index)();
+        //把当前unit 加上class: is-inverse is-center
+
+        //把之前居中的去掉
+      //}
+    //}
   }
 
-  test(){
-      console.log(test);
-  }
+  // test(){
+  //     console.log(test);
+  // }
   //组件加载以后 为每张图片计算其位置的范围
   componentDidMount(){
     //console.log('componentDidMount...');
@@ -231,6 +238,7 @@ class AppComponent extends React.Component {
  
   render() {
     let imageFigures = [];
+    let controlUnits = [];
     // const imgProps = {
     //   imageURL:'../image/1.jpg',
     //   title:'text',
@@ -263,7 +271,8 @@ class AppComponent extends React.Component {
         }
         //let refName = 'img'+index;
         //imageFigures.push(<ImageFigure {...imageProps} />);
-        imageFigures.push(imageProps);   
+        imageFigures.push(imageProps);  
+        controlUnits.push(<ControllerUnit reverse = {this.inverse(index)} rearrange = {this.rearrange(index)} arrange = {this.state.imgsArrangeArr[index]}/>) 
      }.bind(this));
      //console.log(imageFigures);
     
@@ -290,12 +299,14 @@ class AppComponent extends React.Component {
               <ImageFigure>用 {} 包着就无法渲染？为什么？
                */
               <ImageFigure {...item} rearrange = {this.rearrange(key)}  reverse = {this.inverse(key)} imgRef = { (node) => (imageNodes[key] = node)} />
+              
           )}
           
         </section>
 
         <section className="ctrl-nav">
-          ctrl-nav
+          {/*<ControllerUnit />*/}
+          {controlUnits}
         </section>
       </section>
     );

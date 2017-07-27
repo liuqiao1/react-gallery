@@ -1,0 +1,49 @@
+/*
+ *使用Iconfont，字体文件代替图片文件展示图标
+ *Iconfont的体积更小
+ *Iconfont是矢量图，拉伸不变形，颜色可自行更换，支持CSS3对字体的修饰效果
+ */
+@font-face {
+  font-family: 'icons-turn-arrow';
+  src: url('../fonts/icons/turn-arrow.eot') format('enbedded'),
+       url('../fonts/icons/turn-arrow.woff') format('woff'),
+       url('../fonts/icons/turn-arrow.ttf') format('truetype'),
+       url('../fonts/icons/turn-arrow.svg') format('svg');
+}
+
+.controller-unit{
+    display: inline-block;
+    margin: 0 5px;
+
+    height: 30px;
+    width: 30px;
+
+    background-color: #aaa;
+    border-radius: 50%;
+
+    transform: scale(0.5);
+
+    text-align: center;
+    cursor: pointer;
+    vertical-align: middle;
+
+    &.is-center{
+        transform: scale(1);
+        background-color: #888;
+        transition: transform .6s ease-in-out, background-color .6s ease-in-out;
+
+        &::after{
+            color: #fff;
+            font-family: 'icons-turn-arrow';
+            content: '\e600';
+            line-height: 30px;
+            font-size: 80%;
+        }   
+         
+         &.is-inverse{
+             background-color: #555;
+             transform: rotateY(180deg);
+         }
+
+    }
+}

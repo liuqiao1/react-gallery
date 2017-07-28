@@ -24,8 +24,9 @@ const ImageFigure = ({...props}) => {
       styleObj  = arrange.pos;
   }
   if(arrange.rotate){
-      (['-moz-', '-ms-', '-webkit-', '']).forEach((value)=>{
-          styleObj[value+'transform'] = 'rotate('+arrange.rotate+'deg)';
+      //内联样式用驼峰法命名
+      (['MozTransform', 'MsTransform', 'WebkitTransform', '']).forEach((value)=>{
+          styleObj[value] = 'rotate('+arrange.rotate+'deg)';
       }) 
   }
 

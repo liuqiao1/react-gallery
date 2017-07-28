@@ -99,7 +99,7 @@ class AppComponent extends React.Component {
 
           //布局在舞台上侧的图片信息   Math.random()返回0.0 ~ 1.0 之间的一个伪随机数
           imgsArrangeTopArr = [],
-          topImgNum = Math.ceil (Math.random() * 2),//取值区间0或1
+          topImgNum = Math.floor (Math.random() * 2),//取值区间0或1
           topImgSpliceIndex = 0,//标记 从哪个位置来取
           
           //布局在舞台中间的图片信息
@@ -117,9 +117,9 @@ class AppComponent extends React.Component {
           //imgsArrangeCenterArr[0].rotate = 0;
           //imgsArrangeCenterArr[0].isCenter =  true;
 
-          debugger;
+          //debugger;
           //取出要布局上侧图片的状态信息
-          topImgSpliceIndex = Math.floor(Math.random() * (imgsArrangeArr.length - topImgNum));//从索引位置往后取出
+          topImgSpliceIndex = Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));//从索引位置往后取出
           imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex,topImgNum);
 
           // 布局位于上侧的图片
@@ -272,7 +272,7 @@ class AppComponent extends React.Component {
         //let refName = 'img'+index;
         //imageFigures.push(<ImageFigure {...imageProps} />);
         imageFigures.push(imageProps);  
-        controlUnits.push(<ControllerUnit reverse = {this.inverse(index)} rearrange = {this.rearrange(index)} arrange = {this.state.imgsArrangeArr[index]}/>) 
+        controlUnits.push(<ControllerUnit key = {index} reverse = {this.inverse(index)} rearrange = {this.rearrange(index)} arrange = {this.state.imgsArrangeArr[index]}/>) 
      }.bind(this));
      //console.log(imageFigures);
     
@@ -298,7 +298,7 @@ class AppComponent extends React.Component {
 
               <ImageFigure>用 {} 包着就无法渲染？为什么？
                */
-              <ImageFigure {...item} rearrange = {this.rearrange(key)}  reverse = {this.inverse(key)} imgRef = { (node) => (imageNodes[key] = node)} />
+              <ImageFigure {...item} key = {key} rearrange = {this.rearrange(key)}  reverse = {this.inverse(key)} imgRef = { (node) => (imageNodes[key] = node)} />
               
           )}
           

@@ -9,6 +9,20 @@ react画廊    [演示地址](https://liuqiao1.github.io/react-gallery/)
 ### E-mail: liuqiao@csu.edu.cn
 ****
 
+## 目录
+* [使用Yeoman快速创建新项目](使用Yeoman快速创建新项目)
+* [npm run serve 干了什么？](npm run serve 干了什么？)
+* [gulp,grunt怎么不见了](gulp,grunt怎么不见了)
+* [使用less](使用less)    
+* [创建React组件的三种方式](创建React组件的三种方式)
+* [函数式定义的无状态组件 怎么写](函数式定义的无状态组件 怎么写)
+* [es6形式的extends React.Component定义的组件 怎么写](es6形式的extends React.Component定义的组件 怎么写)
+* [如何获取DOM](如何获取DOM)
+* [如何传递 （handler）事件处理函数 给函数式组件](如何传递 （handler）事件处理函数 给函数式组件)
+* [关于github pages](关于github pages)
+* [还没有解决的问题](还没有解决的问题)
+* [一点废话](一点废话)
+
 ## 使用Yeoman快速创建新项目
 [Yeoman 中文网](http://www.yowebapp.com/)
 
@@ -103,7 +117,8 @@ compiler.plugin('done', () => {
 });
 
 ```
-## 项目构建的方式改动很大，去掉了gulp,grunt, 使用webpack包办了这些任务。
+## gulp,grunt怎么不见了
+项目构建的方式改动很大，去掉了gulp,grunt, 使用webpack包办了这些任务。<br/>
 真正的配置内容没有写在src/webpack.config.js, 这个文件的作用仅仅是根据env参数来加载对应的配置。<br/>
 
 ```//javascript
@@ -179,7 +194,7 @@ let defaultSettings = require('./defaults');
 ```
  publicPath: '/assets/'
 ```
-昨天不知怎么地手贱把assets前面的斜杠去掉了，这下404真的出现了。
+昨天不知怎么地手贱把assets前面的斜杠去掉了，这下404真的出现了。<br/>
 冥思苦想许久，还是用git reset 对比文件修改处才发现端倪。
 `对于按需加载(on-demand-load)或加载外部资源(external resources)（如图片、文件等）来说，output.publicPath 是很重要的选项。如果指定了一个错误的值，则在加载这些资源时会收到 404 错误。
 
@@ -195,7 +210,7 @@ let defaultSettings = require('./defaults');
 ## 创建React组件的三种方式
 视频中用的方法是createClass,现在已经不推荐使用了。<br/>
 可以看到，yeoman生成的代码中使用的是 es6 方式，extends React.Component.<br/>
-我找到一个特别好的博客来介绍这三种方式以及他们的异同：[React创建组件的三种方式及其区别](http://www.cnblogs.com/wonyun/p/5930333.html)
+我找到一个特别好的博客来介绍这三种方式以及他们的异同：[React创建组件的三种方式及其区别](http://www.cnblogs.com/wonyun/p/5930333.html)<br/>
 
 使用原则是：能使用函数定义式实现，尽量用纯函数；如果涉及state尽量用继承方式，除非万不得已不要用createClass方式。
 
@@ -350,8 +365,8 @@ class SignUpDialog extends React.Component {
 ```
 
 ## 如何传递 （handler）事件处理函数 给函数式组件？
-上面说到我将ImageFigure组件拆分出来用函数定义式实现，那么当点击图片时的事件处理函数该如何处理呢？
-因为点击图片之后需要触发setState修改状态，所以事件处理不可能在ImageFigure里写，这样做也有悖于函数定义式组件的设计原则。
+上面说到我将ImageFigure组件拆分出来用函数定义式实现，那么当点击图片时的事件处理函数该如何处理呢？<br/>
+因为点击图片之后需要触发setState修改状态，所以事件处理不可能在ImageFigure里写，这样做也有悖于函数定义式组件的设计原则。<br/>
 既然这样，只能选择由父组件通过props传入。
 
 ```//javascript
@@ -389,13 +404,13 @@ git subtree push --prefix=dist origin gh-pages *gh-pages是github默认分支，
 登陆github账户就会发现多了一个gh-pages分支，该分支下就是dist目录下的内容（为啥多了个stati文件夹？）
 
 ## 还没有解决的问题
-图片翻转的时候出现图片说明如何实现？
-react渲染过程是怎样的？浏览器里面都发生了什么？
-当我关闭编辑器，页面依然可以点，翻转，切换都有效，是浏览器缓存起来了吗？ 缓存了什么？什么时候缓存的？
+* 图片翻转的时候出现图片说明如何实现？
+* react渲染过程是怎样的？浏览器里面都发生了什么？
+* 当我关闭编辑器，页面依然可以点，翻转，切换都有效，是浏览器缓存起来了吗？ 缓存了什么？什么时候缓存的？
 
 ## 一点废话
-小白的探索之路真是遍布荆棘啊~ 感叹自己水平还太渣了，代码还有很多需要改进的地方，这里权当记录吧。
-关键时刻，官方文档才是亲妈！
-遇到问题就解决问题，以我现在的水平，遇到的问题都能搜到~
-不要中途放弃，动手做起来，才会有效。
-手残不要紧，还有git这个好工具，感谢git, git大法好！
+小白的探索之路真是遍布荆棘啊~ 感叹自己水平还太渣了，代码还有很多需要改进的地方，这里权当记录吧。<br/>
+* 关键时刻，官方文档才是亲妈！
+* 遇到问题就解决问题，以我现在的水平，遇到的问题都能搜到~
+* 不要中途放弃，动手做起来，才会有效。
+* 手残不要紧，还有git这个好工具，感谢git, git大法好！

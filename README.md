@@ -193,4 +193,158 @@ let defaultSettings = require('./defaults');
   
 
 ## 创建React组件的三种方式
+视频中用的方法是createClass,现在已经不推荐使用了。<br/>
+可以看到，yeoman生成的代码中使用的是 es6 方式，extends React.Component.<br/>
+我找到一个特别好的博客来介绍这三种方式以及他们的异同：[React创建组件的三种方式及其区别](http://www.cnblogs.com/wonyun/p/5930333.html)
 
+使用原则是：能使用函数定义式实现，尽量用纯函数；如果涉及state尽量用继承方式，除非万不得已不要用createClass方式。
+
+## 函数式定义的无状态组件 怎么写
+视频中把展示图片的imageFigure, 控制单元controlUnit 都写在了一个文件里面。<br/>
+我觉得这样不太合适。万一以后别的页面也要用这两个组件呢？<br/>
+所以我把这两个组件拆分出来，用函数定义式方式实现。<br/>
+
+以imageFigure为例吧。
+```//javascript
+require('./ImageFigure.less');
+
+//如果不引入React：Uncaught ReferenceError: React is not defined
+import React from 'react'
+
+const ImageFigure = ({...props}) => {
+  const {imageURL, title, arrange, reverse, rearrange} = props;
+  let styleObj = {};
+
+  let imgFigureClassName = 'img-figure';//arrange.isInverse? 'img-back' : 'img-figure';
+      imgFigureClassName += arrange.isInverse? ' img-back' : ' '; 
+
+  if(arrange.pos){
+      styleObj  = arrange.pos;
+  }
+  if(arrange.rotate){
+      //内联样式用驼峰法命名
+      (['MozTransform', 'MsTransform', 'WebkitTransform', '']).forEach((value)=>{
+          styleObj[value] = 'rotate('+arrange.rotate+'deg)';
+      }) 
+  }
+
+  function handleClick(e){
+      //console.log(arrange.isInverse? 'inverse':'not inverse');
+      
+      if(arrange.isCenter){
+          //点击中间的图片
+          reverse();
+      }else{
+          rearrange();
+      }
+  }
+  return (
+    <figure className = {imgFigureClassName} ref={props.imgRef} style = {styleObj} onClick = {handleClick}>
+        <img src={imageURL} alt={title}/>
+        <figcaption>
+            <h2>{title}</h2>
+        </figcaption>
+    </figure>
+  );
+}
+
+export default ImageFigure
+//import时如果写 import {ImageFigure}就错了
+//加了default 默认引入  import 随便名字 from ''
+```
+```//css
+.img-figure{
+    position: absolute;
+
+    width: 300px;
+    height: 340px;
+    //overflow: hidden;
+    margin: 0;
+    padding:20px;
+
+    background-color: #fff;
+    box-sizing: border-box;
+
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform .6s ease-in-out, left .6s ease-in-out,top .6s ease-in-out;
+
+    img{
+        width: 100%;
+        height: 90%;
+    }
+    
+    figcaption{
+        text-align: center;
+
+        h2{
+            margin: 20px 0 0 0;
+            color: #a7a0a2;
+            font-size: 16px;
+        }
+    }
+
+    &.img-back{
+        //background-color: red;
+        transform: rotateY(180deg);
+        -webkit-transform: rotateY(180deg); /* Safari 与 Chrome */
+    }
+
+    
+}
+
+## es6形式的extends React.Component定义的组件 怎么写？
+先贴一段官网的格式：
+
+```//javascript
+class SignUpDialog extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSignUp = this.handleSignUp.bind(this);
+    this.state = {login: ''};
+  }
+
+  render() {
+    return (
+      <Dialog title="Mars Exploration Program"
+              message="How should we refer to you?">
+        <input value={this.state.login}
+               onChange={this.handleChange} />
+        <button onClick={this.handleSignUp}>
+          Sign Me Up!
+        </button>
+      </Dialog>
+    );
+  }
+
+  handleChange(e) {
+    this.setState({login: e.target.value});
+  }
+
+  handleSignUp() {
+    alert(`Welcome aboard, ${this.state.login}!`);
+  }
+}
+```
+相比craeteClass方式，很明显的不同点是初始化state放在了构造函数里，如果函数内部要用this 必须要bind.另外生命周期方法也不是用***：来写了，具体细节还是查文档吧。
+
+## 如何获取DOM
+视频中用的方法是：
+```//javascript
+<div ref={'imgSec'}></div>
+```
+很遗憾，这种方式现在已经被抛弃了。查看文档[Refs and the DOM](https://facebook.github.io/react/docs/refs-and-the-dom.html)
+
+```//javascript
+ //react 将底层node传给section
+ <section className="stage" ref = {(section) => { this.stage = section; }}>  
+```
+如果要获取函数定义式组件里的DOM呢？<br/>
+
+```//javascript
+//当作一个普通prop传回调
+<ImageFigure imgRef = { (node) => (imageNodes[key] = node)} />
+//组件接收
+<figure ref={props.imgRef}></figure>
+```

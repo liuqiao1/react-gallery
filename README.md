@@ -12,17 +12,17 @@ react画廊    [演示地址](https://liuqiao1.github.io/react-gallery/)
 
 ## 目录
 * [使用Yeoman快速创建新项目](#使用Yeoman快速创建新项目)
-* [npm run serve 干了什么？](#npm run serve 干了什么？)
-* [gulp,grunt怎么不见了](#gulp,grunt怎么不见了)
+* [npm run serve 干了什么？](#npmrunserve 干了什么)
+* [gulp,grunt怎么不见了](#gulp和grunt怎么不见了)
 * [使用less](#使用less)    
 * [创建React组件的三种方式](#创建React组件的三种方式)
-* [函数式定义的无状态组件 怎么写](函数式定义的无状态组件 怎么写)
-* [es6形式的extends React.Component定义的组件 怎么写](es6形式的extends React.Component定义的组件 怎么写)
-* [如何获取DOM](如何获取DOM)
-* [如何传递 （handler）事件处理函数 给函数式组件](如何传递 （handler）事件处理函数 给函数式组件)
-* [关于github pages](关于github pages)
-* [还没有解决的问题](还没有解决的问题)
-* [一点废话](一点废话)
+* [函数式定义的无状态组件 怎么写](#函数式定义的无状态组件 怎么写)
+* [es6形式的extends React.Component定义的组件 怎么写](#es6形式的extends React.Component定义的组件怎么写)
+* [如何获取DOM](#如何获取DOM)
+* [如何传递 （handler）事件处理函数 给函数式组件](#如何传递事件处理函数给函数式组件)
+* [关于github pages](#关于githubpages)
+* [还没有解决的问题](#还没有解决的问题)
+* [一点废话](#一点废话)
 
 
 
@@ -36,7 +36,7 @@ yo react-webpack
 npm install
 npm run serve
 ```
-## npm run serve 干了什么？
+## npmrunserve 干了什么
 查看 `src/package.json`, 
 ```
 "serve": "node server.js --env=dev",
@@ -119,7 +119,7 @@ compiler.plugin('done', () => {
 });
 
 ```
-## gulp,grunt怎么不见了
+## gulp和grunt怎么不见了
 项目构建的方式改动很大，去掉了gulp,grunt, 使用webpack包办了这些任务。<br/>
 真正的配置内容没有写在src/webpack.config.js, 这个文件的作用仅仅是根据env参数来加载对应的配置。<br/>
 
@@ -216,7 +216,7 @@ let defaultSettings = require('./defaults');
 
 使用原则是：能使用函数定义式实现，尽量用纯函数；如果涉及state尽量用继承方式，除非万不得已不要用createClass方式。
 
-## 函数式定义的无状态组件 怎么写
+## 函数式定义的无状态组件怎么写
 视频中把展示图片的imageFigure, 控制单元controlUnit 都写在了一个文件里面。<br/>
 我觉得这样不太合适。万一以后别的页面也要用这两个组件呢？<br/>
 所以我把这两个组件拆分出来，用函数定义式方式实现。<br/>
@@ -310,7 +310,7 @@ export default ImageFigure
     
 }
 
-## es6形式的extends React.Component定义的组件 怎么写？
+## es6形式的extends React.Component定义的组件怎么写？
 先贴一段官网的格式：
 
 ```//javascript
@@ -398,7 +398,7 @@ this.inverse = (index) => {
 ```
 这样程序会进入死循环。原因是执行 <ImageFigure reverse = {this.inverse(key)} />遇到inverse直接执行了inverse里的setState代码, 而setState恰好又触发render,这样循环往复肯定会挂~
 
-## 关于github pages
+## 关于githubpages
 ```
 npm run dist *打包到输出目录 这相当于要部署的内容*
 git subtree push --prefix=dist origin gh-pages *gh-pages是github默认分支，名字不能随便乱改*

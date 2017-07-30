@@ -348,3 +348,54 @@ class SignUpDialog extends React.Component {
 //组件接收
 <figure ref={props.imgRef}></figure>
 ```
+
+## 如何传递 （handler）事件处理函数 给函数式组件？
+上面说到我将ImageFigure组件拆分出来用函数定义式实现，那么当点击图片时的事件处理函数该如何处理呢？
+因为点击图片之后需要触发setState修改状态，所以事件处理不可能在ImageFigure里写，这样做也有悖于函数定义式组件的设计原则。
+既然这样，只能选择由父组件通过props传入。
+
+```//javascript
+ <ImageFigure  rearrange = {this.rearrange(key)}  reverse = {this.inverse(key)} />
+ 
+ this.inverse = (index) => {
+      return (() => {
+        let imgsArrangeArr = self.state.imgsArrangeArr;
+        imgsArrangeArr[index].isInverse = !imgsArrangeArr[index].isInverse;
+
+        this.setState({
+          imgsArrangeArr: imgsArrangeArr
+        })
+      })
+    }
+```
+  一定要注意！！！inverse()返回的是一个待执行函数！ 如果写成：
+```//javascript
+this.inverse = (index) => {  
+        let imgsArrangeArr = self.state.imgsArrangeArr;
+        imgsArrangeArr[index].isInverse = !imgsArrangeArr[index].isInverse;
+
+        this.setState({
+          imgsArrangeArr: imgsArrangeArr
+        })
+    }
+```
+这样程序会进入死循环。原因是执行 <ImageFigure reverse = {this.inverse(key)} />遇到inverse直接执行了inverse里的setState代码, 而setState恰好又触发render,这样循环往复肯定会挂~
+
+## 关于github pages
+```
+npm run dist *打包到输出目录 这相当于要部署的内容*
+git subtree push --prefix=dist origin gh-pages *gh-pages是github默认分支，名字不能随便乱改*
+```
+登陆github账户就会发现多了一个gh-pages分支，该分支下就是dist目录下的内容（为啥多了个stati文件夹？）
+
+## 还没有解决的问题
+图片翻转的时候出现图片说明如何实现？
+react渲染过程是怎样的？浏览器里面都发生了什么？
+当我关闭编辑器，页面依然可以点，翻转，切换都有效，是浏览器缓存起来了吗？ 缓存了什么？什么时候缓存的？
+
+## 一点废话
+小白的探索之路真是遍布荆棘啊~ 感叹自己水平还太渣了，代码还有很多需要改进的地方，这里权当记录吧。
+关键时刻，官方文档才是亲妈！
+遇到问题就解决问题，以我现在的水平，遇到的问题都能搜到~
+不要中途放弃，动手做起来，才会有效。
+手残不要紧，还有git这个好工具，感谢git, git大法好！

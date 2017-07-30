@@ -11,11 +11,11 @@ react画廊    [演示地址](https://liuqiao1.github.io/react-gallery/)
 [TOC]
 
 ## 目录
-* [使用Yeoman快速创建新项目](#使用Yeoman快速创建新项目)
+* [使用Yeoman快速创建新项目](#使用yeoman快速创建新项目)
 * [npm run serve 干了什么？](#npmrunserve干了什么)
 * [gulp,grunt怎么不见了](#gulp和grunt怎么不见了)
 * [使用less](#使用less)    
-* [创建React组件的三种方式](#创建React组件的三种方式)
+* [创建React组件的三种方式](#创建react组件的三种方式)
 * [函数式定义的无状态组件 怎么写](#函数式定义的无状态组件怎么写)
 * [es6形式的extends React.Component定义的组件 怎么写](#es6形式定义的组件怎么写)
 * [如何获取DOM](#如何获取dom)
@@ -26,7 +26,7 @@ react画廊    [演示地址](https://liuqiao1.github.io/react-gallery/)
 
 
 
-## 使用Yeoman快速创建新项目
+## 使用yeoman快速创建新项目
 [Yeoman 中文网](http://www.yowebapp.com/)
     
 ```Bash
@@ -209,7 +209,7 @@ let defaultSettings = require('./defaults');
   新版的 cfg/defaults.js 已经把 less,scss 的loader都考虑进去了。
   
 
-## 创建React组件的三种方式
+## 创建react组件的三种方式
 视频中用的方法是createClass,现在已经不推荐使用了。<br/>
 可以看到，yeoman生成的代码中使用的是 es6 方式，extends React.Component.<br/>
 我找到一个特别好的博客来介绍这三种方式以及他们的异同：[React创建组件的三种方式及其区别](http://www.cnblogs.com/wonyun/p/5930333.html)<br/>

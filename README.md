@@ -104,7 +104,8 @@ compiler.plugin('done', () => {
 
 ```
 ## 项目构建的方式改动很大，去掉了gulp,grunt, 使用webpack包办了这些任务。
-真正的配置内容没有写在src/webpack.config.js, 这个文件的作用仅仅是根据env参数来加载对应的配置。
+真正的配置内容没有写在src/webpack.config.js, 这个文件的作用仅仅是根据env参数来加载对应的配置。<br/>
+
 ```//javascript
 'use strict';
 
@@ -117,6 +118,15 @@ const path = require('path');
  * slice() 方法可从已有的数组中返回选定的元素。
  */
 const args = require('minimist')(process.argv.slice(2));
+
+
+/**
+ * [ 'D:\\nodeJS\\node.exe',
+  'F:\\FrontEnd\\react-gallery\\server.js',
+  '--env=dev' ]
+ */
+console.log('args:'+args);
+
 
 // List of allowed environments
 const allowedEnvs = ['dev', 'dist', 'test'];
@@ -138,8 +148,10 @@ process.env.REACT_WEBPACK_ENV = env;
  * @return {Object} Webpack config
  */
 function buildConfig(wantedEnv) {
-  let isValid = wantedEnv && wantedEnv.length > 0 && allowedEnvs.indexOf(wantedEnv) !== -1;
-  let validEnv = isValid ? wantedEnv : 'dev';
+ 
+  let isValid = wantedEnv && wantedEnv.length > 0 && allowedEnvs.indexOf(wantedEnv) !== -1;// 参数校验
+
+  let validEnv = isValid ? wantedEnv : 'dev';//  默认dev环境
   let config = require(path.join(__dirname, 'cfg/' + validEnv));
   return config;
 }
@@ -147,71 +159,38 @@ function buildConfig(wantedEnv) {
 module.exports = buildConfig(env);
 
 ```
+
 真正的配置文件在cfg目录下。
-
-
-
-这是一个大标题
-====
-
-中标题
-----
-
-# 一级标题   中间要加空格哦~
-## 二级标题
-### 三级标题
-#### 四级标题
-##### 五级标题
-###### 六级标题
-
-这是普通文本，换行要用'\<br>'  <br/> 换行了
-
-    使用两个Tab符实现单行文本。
-
-多行文本和单行文本异曲同工，只要在每行行首加两个Tab
-
-    亲爱的蛋儿：
-    你好吗？
-    屎吃完了吗？
-
-如果你想使一段话中部分文字高亮显示，来起到突出强调的作用，那么可以把它用 `  ` 包围起来。<br/>
-注意这不是单引号，而是Tab上方，数字1左边的按键（注意使用英文输入法）。
-
- `我是高亮，姓高名亮`  我不是高亮
- 
- 文字超链接
-
-给一段文字加入超链接的格式是这样的 [ 要显示的文字 ]( 链接的地址 )。比如：
-[百度]（www.baidu.com "百度的链接"）
-
-li效果
-* 昵称：果冻虾仁
-* 别名：隔壁老王
-* 英文名：Jelly
-
-带层级
-* 编程语言
-    * 脚本语言
-        * Python
-        
-树结构
->数据结构
->>树
->>>二叉树
->>>>平衡二叉树
->>>>>满二叉树
-
-图片
-![baidu](http://www.baidu.com/img/bdlogo.gif "百度logo")
-
-如果是自己的仓库里的图片：
-https://github.com / 你的用户名 / 你的项目名 / raw / 分支名 / 存放图片的文件夹 / 该文件夹下的图片
-
-插入代码片段
-
-我们需要在代码的上一行和下一行用` `` 标记。``` 不是三个单引号，而是数字1左边，Tab键上面的键。要实现语法高亮那么只要在 ``` 之后加上你的编程语言即可（忽略大小写）。c++语言可以写成c++也可以是cpp。
-
-```javascript
-let info = 'ok';
-console.log(info);
+比如，如果我们运行nom run serve,那么与之匹配的试env=dev.<br/>
+来看看 cfg/dev.js.<br/>
+一打开就可以发现，这不对呀，怎么可能这么简单呢，loaders也没有，不着急，看看
+```//javascript
+let baseConfig = require('./base');
+let defaultSettings = require('./defaults');
 ```
+原来yeoman把不同环境下的公共配置提取到了这两个文件中。
+关于[webpack 的配置项]('https://doc.webpack-china.org/configuration/')，我只想说一说output.publicPath.
+
+在src/index.html中有一句：
+```//javascript
+<script type="text/javascript" src="/assets/app.js"></script>
+```
+乍一看会很纳闷，src下根本就没有assets文件夹，这样可是会报404的，但事实是程序跑得好好的，就是因为配置了这个publicPath.
+```
+ publicPath: '/assets/'
+```
+昨天不知怎么地手贱把assets前面的斜杠去掉了，这下404真的出现了。
+冥思苦想许久，还是用git reset 对比文件修改处才发现端倪。
+`对于按需加载(on-demand-load)或加载外部资源(external resources)（如图片、文件等）来说，output.publicPath 是很重要的选项。如果指定了一个错误的值，则在加载这些资源时会收到 404 错误。
+
+此选项指定在浏览器中所引用的「此输出目录对应的公开 URL」。相对 URL(relative URL) 会被相对于 HTML 页面（或 <base> 标签）解析。相对于服务的 URL(Server-relative URL)，相对于协议的 URL(protocol-relative URL) 或绝对 URL(absolute URL) 也可是可能用到的，或者有时必须用到，例如：当将资源托管到 CDN 时。
+
+该选项的值是以 runtime(运行时) 或 loader(载入时) 所创建的每个 URL 为前缀。因此，在多数情况下，此选项的值都会以/结束。`
+
+## 使用less
+  务必先安装less: npm install less
+  新版的 cfg/defaults.js 已经把 less,scss 的loader都考虑进去了。
+  
+
+## 创建React组件的三种方式
+

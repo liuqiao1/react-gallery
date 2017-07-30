@@ -12,13 +12,13 @@ react画廊    [演示地址](https://liuqiao1.github.io/react-gallery/)
 
 ## 目录
 * [使用Yeoman快速创建新项目](#使用Yeoman快速创建新项目)
-* [npm run serve 干了什么？](#npmrunserve 干了什么)
+* [npm run serve 干了什么？](#npmrunserve干了什么)
 * [gulp,grunt怎么不见了](#gulp和grunt怎么不见了)
 * [使用less](#使用less)    
 * [创建React组件的三种方式](#创建React组件的三种方式)
 * [函数式定义的无状态组件 怎么写](#函数式定义的无状态组件 怎么写)
-* [es6形式的extends React.Component定义的组件 怎么写](#es6形式的extends React.Component定义的组件怎么写)
-* [如何获取DOM](#如何获取DOM)
+* [es6形式的extends React.Component定义的组件 怎么写](#es6形式定义的组件怎么写)
+* [如何获取DOM](#如何获取dom)
 * [如何传递 （handler）事件处理函数 给函数式组件](#如何传递事件处理函数给函数式组件)
 * [关于github pages](#关于githubpages)
 * [还没有解决的问题](#还没有解决的问题)
@@ -36,7 +36,7 @@ yo react-webpack
 npm install
 npm run serve
 ```
-## npmrunserve 干了什么
+## npmrunserve干了什么
 查看 `src/package.json`, 
 ```
 "serve": "node server.js --env=dev",
@@ -310,7 +310,7 @@ export default ImageFigure
     
 }
 
-## es6形式的extends React.Component定义的组件怎么写？
+## es6形式定义的组件怎么写
 先贴一段官网的格式：
 
 ```//javascript
@@ -346,7 +346,7 @@ class SignUpDialog extends React.Component {
 ```
 相比craeteClass方式，很明显的不同点是初始化state放在了构造函数里，如果函数内部要用this 必须要bind.另外生命周期方法也不是用***：来写了，具体细节还是查文档吧。
 
-## 如何获取DOM
+## 如何获取dom
 视频中用的方法是：
 ```//javascript
 <div ref={'imgSec'}></div>
@@ -366,7 +366,7 @@ class SignUpDialog extends React.Component {
 <figure ref={props.imgRef}></figure>
 ```
 
-## 如何传递 （handler）事件处理函数 给函数式组件？
+## 如何传递事件处理函数给函数式组件
 上面说到我将ImageFigure组件拆分出来用函数定义式实现，那么当点击图片时的事件处理函数该如何处理呢？<br/>
 因为点击图片之后需要触发setState修改状态，所以事件处理不可能在ImageFigure里写，这样做也有悖于函数定义式组件的设计原则。<br/>
 既然这样，只能选择由父组件通过props传入。
